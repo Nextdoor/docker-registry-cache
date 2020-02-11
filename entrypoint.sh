@@ -60,12 +60,12 @@ server {
     resolver 8.8.8.8;
 
     location /debug/health {
-        proxy_pass               ${REGISTERY_STATUS_URL};
+        proxy_pass               ${REGISTRY_STATUS_URL};
     }
 
     location / {
         proxy_http_version       1.1;
-        proxy_pass               ${REGISTERY_URL};
+        proxy_pass               ${REGISTRY_URL};
         proxy_cache              localcache;
         proxy_cache_revalidate   on;
         proxy_cache_valid        200 302 60m;
