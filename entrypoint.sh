@@ -3,6 +3,41 @@
 mkdir -p ${NGINX_CACHE_PATH}
 chown -R nginx:nginx ${NGINX_CACHE_PATH}
 
+/bin/cat <<EOF > /etc/nginx/nginx.conf
+user              nginx;
+worker_processes  8;
+pid               /var/run/nginx.pid;
+events {
+    worker_connections  1024;
+}
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+    tcp_nopush        on;
+    tcp_nodelay       on;
+    log_format log  '{'
+        '"remote_addr": "\$remote_addr",'
+        '"remote_user": "\$remote_user",'
+        '"server_name": "\$server_name",'
+        '"server_port": "\$server_port",'
+        '"host": "\$host",'
+        '"time_local": "\$time_local",'
+        '"context_id": "\$sent_http_context_id",'
+        '"request_time": \$request_time,'
+        '"upstream_response_time": \$upstream_response_time,'
+        '"request": "\$request",'
+        '"request_length": \$request_length,'
+        '"status": \$status,'
+        '"body_bytes_sent": \$body_bytes_sent,'
+        '"http_referer": "\$http_referer",'
+        '"http_x_forwarded_for": "\$http_x_forwarded_for",'
+        '"args": "\$args",'
+        '"event_name": "NGINX_LOG"'
+        '}';
+    keepalive_timeout  65;
+    include /etc/nginx/conf.d/*.conf;
+}
+EOF
 
 /bin/cat <<EOF > /etc/nginx/conf.d/default.conf
 proxy_cache_path ${NGINX_CACHE_PATH} levels=1:2 keys_zone=localcache:100m max_size=${NGINX_CACHE_SIZE} use_temp_path=off;
