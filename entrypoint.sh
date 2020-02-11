@@ -40,9 +40,6 @@ http {
         '"event_name": "NGINX_LOG"'
         '}';
 
-    access_log  /dev/stdout log;
-    error_log   /dev/stderr;
-
     keepalive_timeout  65;
     include /etc/nginx/conf.d/*.conf;
 }
@@ -118,4 +115,5 @@ server {
 }
 EOF
 
+echo "starting nginx"
 /usr/sbin/nginx -g 'daemon off;'
