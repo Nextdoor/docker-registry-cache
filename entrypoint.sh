@@ -43,7 +43,7 @@ EOF
 proxy_cache_path ${NGINX_CACHE_PATH} levels=1:2 keys_zone=localcache:100m max_size=${NGINX_CACHE_SIZE} use_temp_path=off;
 
 server {
-    listen              ${NGINX_PORT} ssl;
+    listen              443 ssl;
     ssl_certificate     ${NGINX_CERT};
     ssl_certificate_key ${NGINX_CERT_KEY};
 
