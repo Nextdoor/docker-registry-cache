@@ -93,18 +93,25 @@ server {
     }
 }
 
+# Redirect http to https
+server {
+    listen 80 default_server;
+    server_name _;
+    return 301 https://\$host\$request_uri;
+}
+
 # Monitoring
 server {
-  listen ${NGINX_STATUS_PORT};
-  server_name localhost;
+    listen ${NGINX_STATUS_PORT};
+    server_name localhost;
 
-  access_log off;
-  allow 127.0.0.1;
-  deny all;
+    access_log off;
+    allow 127.0.0.1;
+    deny all;
 
-  location /nginx_status {
-    stub_status;
-  }
+    location /nginx_status {
+        stub_status;
+    }
 }
 EOF
 
