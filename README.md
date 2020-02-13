@@ -6,7 +6,6 @@ Env Var | Description
 --- | ---
 `NGINX_CACHE_PATH` | Location to store cached content
 `NGINX_CACHE_SIZE` | Size of cache. Eg `1024m`.
-`NGINX_PORT`       | SSL port to listen on.
 `NGINX_CERT`       | SSL certificate in pem format to use.
 `NGINX_CERT_KEY`   | SSL certificate key in pem format to use.
 `REGISTRY_URL`     | Docker registry url to proxy pass through to. Eg. `http://localhost:5000`
