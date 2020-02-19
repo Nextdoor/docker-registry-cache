@@ -15,28 +15,23 @@ http {
     default_type  application/octet-stream;
     tcp_nopush        on;
     tcp_nodelay       on;
-    log_format log  '{'
+    log_format main '{'
         '"remote_addr": "\$remote_addr",'
-        '"remote_user": "\$remote_user",'
-        '"server_name": "\$server_name",'
-        '"server_port": "\$server_port",'
-        '"host": "\$host",'
         '"time_local": "\$time_local",'
-        '"context_id": "\$sent_http_context_id",'
         '"request_time": \$request_time,'
         '"upstream_response_time": \$upstream_response_time,'
+        '"upstream_cache_status": "\$upstream_cache_status",'
         '"request": "\$request",'
         '"request_length": \$request_length,'
         '"status": \$status,'
-        '"body_bytes_sent": \$body_bytes_sent,'
-        '"http_referer": "\$http_referer",'
-        '"http_x_forwarded_for": "\$http_x_forwarded_for",'
-        '"args": "\$args",'
-        '"event_name": "NGINX_LOG"'
+        '"body_bytes_sent": \$body_bytes_sent'
         '}';
+    access_log /dev/stdout main;
+    error_log  /dev/stderr warn;
     keepalive_timeout  65;
     include /etc/nginx/conf.d/*.conf;
 }
+
 EOF
 
 /bin/cat <<EOF > /etc/nginx/conf.d/default.conf
@@ -50,6 +45,7 @@ server {
     resolver 8.8.8.8;
 
     location /debug/health {
+        access_log               off;
         proxy_pass               ${REGISTRY_STATUS_URL};
     }
 
