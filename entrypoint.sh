@@ -35,7 +35,7 @@ http {
 EOF
 
 /bin/cat <<EOF > /etc/nginx/conf.d/default.conf
-proxy_cache_path ${NGINX_CACHE_PATH} levels=1:2 keys_zone=localcache:100m max_size=${NGINX_CACHE_SIZE} use_temp_path=off;
+proxy_cache_path ${NGINX_CACHE_PATH} levels=1:2 keys_zone=localcache:100m max_size=${NGINX_CACHE_SIZE} inactive=1440m use_temp_path=off;
 
 server {
     listen              443 ssl;
