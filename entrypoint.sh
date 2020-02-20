@@ -19,7 +19,7 @@ http {
         '"remote_addr": "\$remote_addr",'
         '"time_local": "\$time_local",'
         '"request_time": \$request_time,'
-        '"upstream_response_time": \$upstream_response_time,'
+        '"upstream_response_time": "\$upstream_response_time",'
         '"upstream_cache_status": "\$upstream_cache_status",'
         '"request": "\$request",'
         '"request_length": \$request_length,'
