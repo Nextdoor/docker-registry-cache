@@ -54,7 +54,7 @@ server {
         proxy_pass               ${REGISTRY_URL};
         proxy_cache              localcache;
         proxy_cache_revalidate   on;
-        proxy_cache_valid        200 302 60m;
+        proxy_cache_valid        200 302 1440m;
         proxy_cache_use_stale    error timeout updating http_500 http_502 http_503 http_504;
         proxy_cache_lock         on;
         proxy_cache_lock_timeout 5m;
@@ -78,7 +78,7 @@ server {
         proxy_cache_key \$uri;
 
         proxy_cache              localcache;
-        proxy_cache_valid        200 302 60m;
+        proxy_cache_valid        200 302 1440m;
         proxy_cache_use_stale    error timeout updating http_500 http_502 http_503 http_504;
         proxy_cache_lock         on;
         proxy_cache_lock_timeout 5m;
