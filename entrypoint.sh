@@ -4,6 +4,7 @@ mkdir -p ${NGINX_CACHE_PATH}
 chown -R nginx:nginx ${NGINX_CACHE_PATH}
 
 /bin/cat <<EOF > /etc/nginx/nginx.conf
+load_module       modules/ngx_http_statsd_module.so;
 user              nginx;
 worker_processes  8;
 pid               /var/run/nginx.pid;
@@ -36,6 +37,9 @@ EOF
 
 /bin/cat <<EOF > /etc/nginx/conf.d/default.conf
 proxy_cache_path ${NGINX_CACHE_PATH} levels=1:2 keys_zone=localcache:100m max_size=${NGINX_CACHE_SIZE} inactive=1440m use_temp_path=off;
+
+statsd_server      127.0.0.1;
+statsd_sample_rate 100; # 100% of requests
 
 server {
     listen              443 ssl;
@@ -86,6 +90,9 @@ server {
         proxy_intercept_errors   on;
         proxy_cache_background_update on;
 
+        # statsd counters
+        statsd_count "nginx.cache.\$upstream_cache_status.bytes_sent" \$body_bytes_sent;
+        statsd_count "nginx.cache.\$upstream_cache_status.count" 1;
     }
 }
 
