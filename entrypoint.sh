@@ -2,6 +2,7 @@
 
 mkdir -p ${NGINX_CACHE_PATH}
 chown -R nginx:nginx ${NGINX_CACHE_PATH}
+STATSD_HOST=${STATSD_HOST-127.0.0.1}
 
 /bin/cat <<EOF > /etc/nginx/nginx.conf
 load_module       modules/ngx_http_statsd_module.so;
@@ -38,7 +39,7 @@ EOF
 /bin/cat <<EOF > /etc/nginx/conf.d/default.conf
 proxy_cache_path ${NGINX_CACHE_PATH} levels=1:2 keys_zone=localcache:100m max_size=${NGINX_CACHE_SIZE} inactive=1440m use_temp_path=off;
 
-statsd_server      127.0.0.1;
+statsd_server      ${STATSD_HOST};
 statsd_sample_rate 100; # 100% of requests
 
 server {
@@ -117,6 +118,13 @@ server {
     }
 }
 EOF
+
+# Sends cache stats in the background
+while : ; do
+    CACHE_BYTES=$(du -s ${NGINX_CACHE_PATH} | awk '{ print $1 }')
+    echo "nginx.cache.size_bytes:${CACHE_BYTES}|c" | nc -w 1 -u ${STATSD_HOST} 8125
+    sleep 60
+done &
 
 echo "starting nginx"
 /usr/sbin/nginx -g 'daemon off;'
