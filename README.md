@@ -11,3 +11,4 @@ Env Var | Description
 `REGISTRY_URL`     | Docker registry url to proxy pass through to. Eg. `http://localhost:5000`
 `REGISTRY_STATUS_URL` | Registry status url. Eg. `http://localhost:5001/debug/health`
 `NGINX_STATUS_PORT`| Port to expose `/nginx_status` on. Note this is only accessible from `127.0.0.1`
+`STATSD_HOST`      | Host to send statsd metrics to.
