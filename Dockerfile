@@ -17,6 +17,6 @@ RUN cd /nginx-${NGINX_VERSION} && \
 
 FROM nginx:1.17.8@sha256:62f787b94e5faddb79f96c84ac0877aaf28fb325bfc3601b9c0934d4c107ba94
 COPY --from=intermediate /nginx-${NGINX_VERSION}/objs/ngx_http_statsd_module.so /etc/nginx/modules
-RUN apt-get update && apt-get install -y netcat && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y netcat socat && rm -rf /var/lib/apt/lists/*
 ADD ./entrypoint.sh /entrypoint.sh
 ENTRYPOINT /entrypoint.sh
