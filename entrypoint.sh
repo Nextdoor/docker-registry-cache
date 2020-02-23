@@ -119,11 +119,18 @@ server {
 }
 EOF
 
+# If statsd hosts is a socket then start socat to do the forwarding
+# because nginx-statsd is udp only.
+if [[ "${STATSD_HOST}" = *socket* ]]
+then
+    socat -s -u UDP-RECV:8125 UNIX-SENDTO:${STATSD_HOST}
+fi
+
 # Sends cache stats in the background
 while : ; do
     CACHE_BYTES=$(du -s ${NGINX_CACHE_PATH} | awk '{ print $1 }')
     echo "nginx.cache.size_bytes:${CACHE_BYTES}|c" | nc -w 1 -u ${STATSD_HOST} 8125
-    sleep 60
+    sleep 10
 done &
 
 echo "starting nginx"
