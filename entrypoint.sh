@@ -4,6 +4,16 @@ mkdir -p ${NGINX_CACHE_PATH}
 chown -R nginx:nginx ${NGINX_CACHE_PATH}
 STATSD_HOST=${STATSD_HOST-127.0.0.1}
 
+# If statsd hosts is a socket then start socat to do the forwarding
+# because nginx-statsd is udp only.
+if [[ "${STATSD_HOST}" = *socket* ]]
+then
+    socat -s -u UDP-RECV:8125 UNIX-SENDTO:${STATSD_HOST}
+    # Reset host so socat is used
+    STATSD_HOST=127.0.0.1
+fi
+
+
 /bin/cat <<EOF > /etc/nginx/nginx.conf
 load_module       modules/ngx_http_statsd_module.so;
 user              nginx;
@@ -118,13 +128,6 @@ server {
     }
 }
 EOF
-
-# If statsd hosts is a socket then start socat to do the forwarding
-# because nginx-statsd is udp only.
-if [[ "${STATSD_HOST}" = *socket* ]]
-then
-    socat -s -u UDP-RECV:8125 UNIX-SENDTO:${STATSD_HOST}
-fi
 
 # Sends cache stats in the background
 while : ; do
